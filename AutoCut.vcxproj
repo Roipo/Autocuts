@@ -35,7 +35,6 @@
     <ClCompile Include="src\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="src\ApplicationPipeline.h" />
     <ClInclude Include="src\ApplicationPipelineGroup.h" />
     <ClInclude Include="src\ApplicationPipelineStep.h" />

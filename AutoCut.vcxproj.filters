@@ -101,9 +101,6 @@
     <ClInclude Include="src\PardisoSolver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\EnergySymDir.h">
       <Filter>Header Files</Filter>
     </ClInclude>
