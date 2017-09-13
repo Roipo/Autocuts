@@ -3,7 +3,11 @@
 #ifndef APPLICATION_PIPELINE_STEP_H
 #define APPLICATION_PIPELINE_STEP_H
 
-#include <igl\viewer\Viewer.h>
+#include <igl/viewer/Viewer.h>
+#include <nanogui/formhelper.h>
+#include <nanogui/window.h>
+
+#include "ApplicationPipeline.h"
 
 struct DataObject;
 namespace igl { namespace viewer { class Viewer; } }

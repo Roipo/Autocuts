@@ -3,8 +3,8 @@
 #ifndef EIGENTYPES_H
 #define EIGENTYPES_H
 
-#include <Eigen\Dense>
-#include <Eigen\Sparse>
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
 #include <vector>
 
 // Dense matrices

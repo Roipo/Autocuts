@@ -3,7 +3,6 @@
 #include "EigenTypes.h"
 
 #include <list>
-#include <Eigen\EigenValues>
 
 using namespace std;
 

@@ -22,8 +22,8 @@ public:
 	shared_ptr<Energy> energy;
 
 	// Activity flags
-	atomic_bool is_running = false;
-	atomic_bool progressed = false;
+	atomic_bool is_running{false};
+	atomic_bool progressed{false};
 
 	// Answer from explicit solver after step done
 	int ret;
@@ -62,13 +62,14 @@ protected:
 	SpMat h;
 
 	// Synchronization structures
-	atomic_bool params_ready_to_update = false;
-	atomic_bool wait_for_param_update = false;
-	atomic_bool a_parameter_was_updated = false;
-	atomic_bool halt = false;
+	atomic_bool params_ready_to_update{false};
+	atomic_bool wait_for_param_update{false};
+	atomic_bool a_parameter_was_updated{false};
+	atomic_bool halt{false};
 	
 	// Mutex needed in lbfgs - thus protected
-	unique_ptr<shared_mutex> mesh_mutex;
+    // Changed by Zhongshi at Sep. 11, 2017 ti adapt to c++14
+	unique_ptr<std::shared_timed_mutex> mesh_mutex;
 
 	// pardiso variables
 	vector<int> IId, JJd, IIs, JJs, IIp, JJp, IIb, JJb, II, JJ;

@@ -1,6 +1,6 @@
 #include "ApplicationPipeline.h"
 
-#include <igl\viewer\Viewer.h>
+#include <igl/viewer/Viewer.h>
 
 using namespace std;
 using namespace igl::viewer;

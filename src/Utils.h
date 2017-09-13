@@ -6,26 +6,26 @@
 #include "EigenTypes.h"
 
 #include <vector>
-#include <igl\sum.h>
-#include <igl\diag.h>
-#include <igl\arap.h>
-#include <igl\lscm.h>
-#include <igl\grad.h>
-#include <igl\slice.h>
-#include <igl\unique.h>
-#include <igl\sparse.h>
-#include <igl\harmonic.h>
-#include <igl\sortrows.h>
-#include <igl\slice_into.h>
-#include <igl\local_basis.h>
-#include <igl\boundary_loop.h>
-#include <igl\per_face_normals.h>
-#include <igl\adjacency_matrix.h>
-#include <igl\map_vertices_to_circle.h>
-#include <igl\project_isometrically_to_plane.h>
+#include <igl/sum.h>
+#include <igl/diag.h>
+#include <igl/arap.h>
+#include <igl/lscm.h>
+#include <igl/grad.h>
+#include <igl/slice.h>
+#include <igl/unique.h>
+#include <igl/sparse.h>
+#include <igl/harmonic.h>
+#include <igl/sortrows.h>
+#include <igl/slice_into.h>
+#include <igl/local_basis.h>
+#include <igl/boundary_loop.h>
+#include <igl/per_face_normals.h>
+#include <igl/adjacency_matrix.h>
+#include <igl/map_vertices_to_circle.h>
+#include <igl/project_isometrically_to_plane.h>
 
 // for EXCEPTION_POINTERS
-#include <Windows.h>
+//#include <Windows.h>
 
 using namespace std;
 
@@ -48,7 +48,7 @@ public:
 		compute_EVvars(Fs, E2Edt, EVvar1, EVvar2);
 	}
 
-	static void Utils::compute_EVvars(const MatX3i& Fs, const Mat& E2Edt, SpMat& EVvar1, SpMat& EVvar2)
+	static void compute_EVvars(const MatX3i& Fs, const Mat& E2Edt, SpMat& EVvar1, SpMat& EVvar2)
 	{
 		Mati El(Fs.rows(), 6);
 		El << Fs.col(0), Fs.col(1), Fs.col(2), Fs.col(0), Fs.col(1), Fs.col(2);
@@ -101,7 +101,7 @@ public:
 		EVvar2 = E2Ecs * K_V2Ed.transpose();
 	}
 
-	static void Utils::compute_V2V(const MatX3i& F, SpMat& V2V)
+	static void compute_V2V(const MatX3i& F, SpMat& V2V)
 	{
 		Veci lin = Eigen::VectorXi::LinSpaced(3 * nf, 0, 3 * nf - 1);
 		Mat3Xi Ft = F.transpose();
@@ -109,7 +109,7 @@ public:
 		igl::sparse(Fv, lin, Eigen::VectorXi::Ones(3 * F.rows()), V2V);
 	}
 
-	static void Utils::init_mesh(const MatX3& V_in, const MatX3i& F, MatX3& V_out, MatX2& E)
+	static void init_mesh(const MatX3& V_in, const MatX3i& F, MatX3& V_out, MatX2& E)
 	{
 		centralize_vertices(V_in, V_out);
 		nv = V_out.rows();
@@ -118,7 +118,7 @@ public:
 		ne = E.rows();
 	}
 
-	static void Utils::generate_soup_3d_similar(const MatX3& V, const MatX3i& F, MatX3& Vs, MatX3i& Fs)
+	static void generate_soup_3d_similar(const MatX3& V, const MatX3i& F, MatX3& Vs, MatX3i& Fs)
 	{
 		Veci lin = Eigen::VectorXi::LinSpaced(3 * nf, 0, 3 * nf - 1);
 		Mat3Xi Ft = F.transpose();
@@ -128,7 +128,7 @@ public:
 		nvs = Vs.rows(); nfs = Fs.rows();
 	}
 
-	static void Utils::generate_soup_2d_random(const MatX3& V, const MatX3i& F, MatX2& Vs, MatX3i& Fs)
+	static void generate_soup_2d_random(const MatX3& V, const MatX3i& F, MatX2& Vs, MatX3i& Fs)
 	{
 		Veci lin = Eigen::VectorXi::LinSpaced(3 * nf, 0, 3 * nf - 1);
 		Fs = Eigen::Map<Mat3Xi>(lin.data(), 3, nf).transpose();
@@ -136,7 +136,7 @@ public:
 		Vs = (MatX2::Random(3 * nf, 2).array() * 2.0).array();
 	}
 
-	static void Utils::generate_soup_2d_iso(const MatX3& V, const MatX3i& F, MatX2& Vs, MatX3i& Fs)
+	static void generate_soup_2d_iso(const MatX3& V, const MatX3i& F, MatX2& Vs, MatX3i& Fs)
 	{
 		SpMat I;
 		MatX2 Vst;
@@ -158,7 +158,7 @@ public:
 	}
 
 
-	static void Utils::map_vertices_to_circle_area_normalized(
+	static void map_vertices_to_circle_area_normalized(
 		const Eigen::MatrixXd& V,
 		const Eigen::MatrixXi& F,
 		const Eigen::VectorXi& bnd,
@@ -209,7 +209,7 @@ public:
 
 	}
 
-	static void Utils::seperate_3d_and_uv_mesh(const MatX3& V, const MatX3i& F, MatX2& Vs, MatX3i& Fs)
+	static void seperate_3d_and_uv_mesh(const MatX3& V, const MatX3i& F, MatX2& Vs, MatX3i& Fs)
 	{
 		// uv mesh on the left, 3d mesh on the right
 		// find right corner of uv and left of 3d mesh and seperate them by translating the uv mesh to the left
@@ -219,7 +219,7 @@ public:
 		Vs.col(0).array() += 1.5*(diff + diff*0.1);
 	}
 
-	static void Utils::correct_flipped_triangles(MatX2& Vs, MatX3i& Fs)
+	static void correct_flipped_triangles(MatX2& Vs, MatX3i& Fs)
 	{
 		Mat32 f_uv;
 		for (int i = 0; i < Fs.rows(); ++i)
@@ -242,7 +242,7 @@ public:
 		}
 	}
 
-	static void Utils::compute_E2E(const SpMat& V2V, Mat& E2Edt)
+	static void compute_E2E(const SpMat& V2V, Mat& E2Edt)
 	{
 		SpMati Ic_G, Ic_K;
 		compute_V2E(E, Ic_G, false);
@@ -283,7 +283,7 @@ public:
 		E2Edt = E2E.toDense();
 	}
 
-	static void Utils::compute_V2E(const MatX2& E, SpMati& V2E, bool is_soup)
+	static void compute_V2E(const MatX2& E, SpMati& V2E, bool is_soup)
 	{
 		unsigned int ne, nv;
 		if (is_soup) { ne = nes; nv = nvs; }
@@ -299,7 +299,7 @@ public:
 		igl::sparse(I, J, Eigen::VectorXi::Ones(2 * ne), nv, ne, V2E);
 	}
 
-	static void Utils::compute_edges(const MatX3i& F, MatX2& E)
+	static void compute_edges(const MatX3i& F, MatX2& E)
 	{
 		Veci I(3 * nf), J(3 * nf), IC, IA;
 		MatX2i dE = MatX2i(3 * nf, 2), sE, Ei;
@@ -320,7 +320,7 @@ public:
 		E = Ei.cast<double>();
 	}
 
-	static void Utils::centralize_vertices(const MatX3& V_in, MatX3& V_out)
+	static void centralize_vertices(const MatX3& V_in, MatX3& V_out)
 	{
 		RVec3 bary = (V_in.colwise().minCoeff() + V_in.colwise().maxCoeff()) / 2.0;
 		V_out = V_in.rowwise() - bary;
@@ -328,7 +328,7 @@ public:
 		V_out = V_out / dt;
 	}
 
-	static void Utils::computeSurfaceGradientMatrix(const MatX3& V, const MatX3i& F, SpMat& D1, SpMat& D2)
+	static void computeSurfaceGradientMatrix(const MatX3& V, const MatX3i& F, SpMat& D1, SpMat& D2)
 	{
 		MatX3 F1, F2, F3;
 		SpMat DD, Dx, Dy, Dz;
@@ -344,7 +344,7 @@ public:
 		D2 = F2.col(0).asDiagonal()*Dx + F2.col(1).asDiagonal()*Dy + F2.col(2).asDiagonal()*Dz;
 	}
 
-	static void Utils::compute_triangle_areas(const MatX3& V, const MatX3i& F, Vec& A)
+	static void compute_triangle_areas(const MatX3& V, const MatX3i& F, Vec& A)
 	{
 		Veci F1 = F.col(0), F2 = F.col(1), F3 = F.col(2);
 		MatX3 VF1, VF2, VF3;

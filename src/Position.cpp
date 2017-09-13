@@ -1,8 +1,8 @@
 #include "Position.h"
 
 #include <list>
-#include <igl\slice.h>
-#include <igl\slice_into.h>
+#include <igl/slice.h>
+#include <igl/slice_into.h>
 
 DECLARE_DIFFSCALAR_BASE();
 

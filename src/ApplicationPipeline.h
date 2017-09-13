@@ -3,8 +3,10 @@
 #ifndef APPLICATION_PIPELINE_H
 #define APPLICATION_PIPELINE_H
 
-#include <igl\viewer\Viewer.h>
+#include <igl/viewer/Viewer.h>
 #include <igl/viewer/ViewerPlugin.h>
+#include <nanogui/window.h>
+#include <nanogui/formhelper.h>
 
 struct DataObject;
 class ApplicationPipelineStep;

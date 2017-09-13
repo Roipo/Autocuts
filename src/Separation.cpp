@@ -4,7 +4,7 @@
 #include <chrono>
 #include <thread>
 #include <iostream>
-#include <igl\cat.h>
+#include <igl/cat.h>
 
 using namespace std;
 

@@ -1,3 +1,4 @@
+#include <memory>
 #include "BBox.h"
 
 void BBox::init(int n)
@@ -9,7 +10,7 @@ void BBox::init(int n)
 
 void BBox::add_box(const MatX2& X, double xmin, double xmax, double ymin, double ymax)
 {
-	boxes.push_back(make_unique<Box>(xmin, xmax, ymin, ymax));
+	boxes.push_back(std::make_unique<Box>(xmin, xmax, ymin, ymax));
 	int id = boxes.size() - 1;
 
 	// assign all contained vertices of the new box to it

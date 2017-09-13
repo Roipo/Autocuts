@@ -3,8 +3,8 @@
 #include "EigenTypes.h"
 #include "Utils.h"
 #include<functional>
-#include <Eigen\Core>
-#include <Eigen\Sparse>
+#include <Eigen/Core>
+#include <Eigen/Sparse>
 
 class DistortionSymDir
 {

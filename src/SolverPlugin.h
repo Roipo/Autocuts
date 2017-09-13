@@ -9,7 +9,7 @@
 #include "SolverWrapper.h"
 
 #include <thread>
-#include <nanogui\slider.h>
+#include <nanogui/slider.h>
 
 #ifndef INT_INF
 #define INT_INF numeric_limits<int>::max()
@@ -190,7 +190,7 @@ private:
 	// path through vertices, initial cut
 	vector<int> path;
 	
-	inline string removeTrailingZeros(string& s);
+	inline string removeTrailingZeros(string&& s);
 	void init_rotation_matrices();
 	void update_triangle_hit_color();
 	void add_triangle_to_fixed_position_set();
@@ -398,7 +398,7 @@ private:
 	double max_distortion=3;
 	bool colorByRGB=false;
 	MatX3 RGBColors;
-	vector<UINT> nonOverlappingTriIDs;
+	vector<uint> nonOverlappingTriIDs;
 	bool largest_overlapping_part_enabled;
 	set<pair<int, int>> patchBoundaryEdges;
 };
