@@ -30,9 +30,6 @@ void Solver::init(const MatX3& V, const MatX3i& F, const MatX3& V_cut, const Mat
 		case Utils::Init::ISOMETRIC:
 			Utils::generate_soup_2d_iso(V, F, Vs, Fs);
 			break;
-		case Utils::Init::HARMONIC:
-			Utils::generate_soup_2d_harmonic(V_cut, F_cut, Vs, Fs);
-			break;
 		case Utils::Init::LOADED:
 			Vs = V_loaded;
 			Fs = F_loaded;

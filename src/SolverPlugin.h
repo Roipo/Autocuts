@@ -189,8 +189,6 @@ private:
 
 	// path through vertices, initial cut
 	vector<int> path;
-
-	void find_boundary_on_3d_mesh();
 	
 	inline string removeTrailingZeros(string& s);
 	void init_rotation_matrices();
@@ -219,9 +217,6 @@ private:
 
 	void hide_all_menus();
 	void show_all_menus();
-
-	void find_crosshair_z_position();
-	void draw_crosshair();
 
 	bool draws_highlighted_edge = false;
 	// only force an update of the coloring, when we leave the mesh

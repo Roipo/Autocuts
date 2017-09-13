@@ -16,7 +16,6 @@
 #include <igl\png\writePNG.h>
 #include <igl\unproject_ray.h>
 #include <igl\adjacency_list.h>
-#include <igl\cut_mesh_simple.h>
 #include <igl\file_dialog_save.h>
 #include <igl\viewer\ViewerData.h>
 #include <igl\ray_mesh_intersect.h>
@@ -1027,8 +1026,7 @@ bool SolverPlugin::KeyDown(int key, int modifiers)
 		if (mode == Mode::EDGE_CUTTING)
 			reset_edge_cutting();
 		mode = Mode::PAINTING;
-		find_crosshair_z_position();
-		draw_crosshair();
+
 		break;
 	case GLFW_KEY_L:
 		viewer->open_dialog_load_mesh();
@@ -1115,50 +1113,6 @@ bool SolverPlugin::KeyUp(int key, int modifiers)
 	if (is_in_initial_cut_mode)
 		mode = Mode::VERTEX_CLICKING;
 	return false;
-}
-
-void SolverPlugin::find_crosshair_z_position()
-{
-	if (mouse_on_uv_side)
-	{ // whole uv mesh is in z = 0 plane
-		crosshair_z_pos = 1.0;
-	}
-	else
-	{ // on 3d mesh, search for actual highest z vertex, wont change during painting
-		crosshair_z_pos = viewer->get_mesh(mesh_id).V.col(2).maxCoeff() + 1.0;
-	}
-}
-
-void SolverPlugin::draw_crosshair()
-{
-	int segments = 20;
-	Vec theta = Vec::LinSpaced(segments, 0., 2. * M_PI);
-	Vec3 normal(0., 0., 1);
-	Mat32 nullSpace;
-	nullSpace << 1, 0,
-		0, 1,
-		0, 0;
-	MatX3 circlePoints(segments, 3);
-	MatX3 circleColors(segments - 1, 3);
-
-	RVec3 xh_pos;
-	viewer->core.viewport = viewer->core.highlight_viewport;
-	igl::unproject(RVec3(viewer->current_mouse_x, viewer->screen->size()[1] - viewer->current_mouse_y, 0.), (viewer->core.view * viewer->get_mesh(uv_id).model).eval(), viewer->core.proj, viewer->core.viewport, xh_pos);
-	xh_center_3d << xh_pos(0), xh_pos(1), crosshair_z_pos;
-	projected_xh << xh_pos(0), xh_pos(1);
-	igl::repmat<RVec3, MatX3>(xh_center_3d.transpose(), segments, 1, circlePoints);
-
-	Eigen::MatrixX3d offset(segments, 3);
-	offset = Eigen::VectorXd(theta.array().cos()) * nullSpace.col(0).transpose() + Eigen::VectorXd(theta.array().sin()) * nullSpace.col(1).transpose();
-	offset = offset.array().colwise() * Eigen::VectorXd::Constant(segments, xh_radius).array();
-	circlePoints += offset;
-
-	igl::repmat<Eigen::RowVector3d, Eigen::MatrixX3d>(Eigen::RowVector3d(.8, .8, .8), segments - 1, 1, circleColors);
-
-	viewer->get_mesh(xh_id).lines.resize(0, Eigen::NoChange);
-	viewer->get_mesh(xh_id).add_edges(circlePoints.topRows(segments - 1), circlePoints.bottomRows(segments - 1), circleColors);
-	
-	update_colors = true;
 }
 
 void SolverPlugin::reset_edge_cutting()
@@ -1889,7 +1843,6 @@ void SolverPlugin::process_mouse_move()
 	}
 	if (mode == Mode::PAINTING)
 	{
-		draw_crosshair();
 		if (applying_weight_enabled)
 		{
 			apply_weight_onto_hit_corners();
@@ -1932,63 +1885,6 @@ void SolverPlugin::process_mouse_move()
 		}
 	}
 	return;
-}
-
-void SolverPlugin::find_boundary_on_3d_mesh()
-{
-	// find parents of the viewer soup mesh in the original mesh
-	pair<int, int> orig_verts = pair<int, int>(mesh_map_to_orig[initial_cut.first][0], mesh_map_to_orig[initial_cut.second][0]);
-	int src = orig_verts.first;
-	int dst = orig_verts.second;
-	
-	// breadth-first-search
-	int n = V.rows();
-	vector<bool> visited(n, false);
-	visited[src] = true;
-	vector<int> pi(n, -1);
-	vector<int> d(n, 0);
-	d[src] = 0;
-
-	deque<int> Q;
-	Q.push_back(src);
-
-	while (Q.size() != 0)
-	{
-		int u = Q.front();
-		Q.pop_front();
-
-		for (int v : adjacency_list[u])
-		{ // all neighbors
-			if (!visited[v])
-			{
-				visited[v] = true;
-				d[v] = d[u] + 1;
-				pi[v] = u;
-				Q.push_back(v);
-			}
-		}
-		visited[u] = true;
-	}
-
-	// go back from dst to src
-	int curr = dst;
-	while (curr != src)
-	{
-		path.push_back(curr);
-		curr = pi[curr];
-	}
-	path.push_back(src);
-	int i = path.size() - 2;
-	vector<int> back_path;
-	while (i > 0)
-	{
-		back_path.push_back(path[i--]);
-	}
-	path.insert(path.end(), back_path.begin(), back_path.end());
-
-	V_cut = V;
-	F_cut = F;
-	igl::cut_mesh(V_cut, F_cut, path);
 }
 
 void SolverPlugin::apply_weight_onto_hit_corners()

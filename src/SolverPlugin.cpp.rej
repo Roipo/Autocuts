@@ -1,9 +1,0 @@
-diff a/AutoCutCpp/src/SolverPlugin.cpp b/AutoCutCpp/src/SolverPlugin.cpp	(rejected hunks)
-@@ -94,6 +94,7 @@
- 	add_slider();
- 	
- 	auto set_energy_type = bar->addVariable("Sep. Energy Type", solver_wrapper->solver->energy->separation->sepEType, true);
-+	set_energy_type->setItems({ "LOG", "QUADRATIC", "FLAT_LOG", "QUOTIENT" });
- 	set_energy_type->setFixedWidth(140);
- 	
- 	bar->addGroup("Separation Measures");

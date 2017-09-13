@@ -157,29 +157,6 @@ public:
 		Vs += MatX2::Random(Vs.rows(), Vs.cols())*1e-6;
 	}
 
-	static void Utils::generate_soup_2d_harmonic(const MatX3& V, const MatX3i& F, MatX2& Vs, MatX3i& Fs)
-	{
-		Veci bnd;
-		igl::boundary_loop(F, bnd);
-		Mat bnd_uv;
-		igl::map_vertices_to_circle(V, bnd, bnd_uv);
-
-		Mat initial_guess;
-		igl::harmonic(V, F, bnd, bnd_uv, 1, initial_guess);
-
-		Veci lin = Eigen::VectorXi::LinSpaced(3 * nf, 0, 3 * nf - 1);
-		Fs = Eigen::Map<Mat3Xi>(lin.data(), 3, nf).transpose();
-
-		Vs = MatX2(3 * Fs.rows(), 2);
-
-		Mat32 face;
-		for (int i = 0; i < F.rows(); ++i)
-		{
-			igl::slice(initial_guess, F.row(i).eval(), 1, face);
-			Vs.block<3, 2>(3 * i, 0) = face;
-		}
-		Vs += MatX2::Random(Vs.rows(), Vs.cols())*1e-6;
-	}
 
 	static void Utils::map_vertices_to_circle_area_normalized(
 		const Eigen::MatrixXd& V,
