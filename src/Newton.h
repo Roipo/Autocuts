@@ -2,10 +2,13 @@
 
 #include "Solver.h"
 #include "EigenTypes.h"
+
+#ifdef USE_PARDISO
 #include "PardisoSolver.h"
+#endif
 
 #include <iostream>
-#include <Eigen\SparseCholesky>
+#include <Eigen/SparseCholesky>
 
 using namespace std;
 
@@ -33,6 +36,10 @@ private:
 	// Solver that computes Hp = -g
 	Eigen::SimplicialLDLT<SpMat> solver; // not used anymore
 
+#ifdef USE_PARDISO
 	unique_ptr<PardisoSolver<vector<int>, vector<double>>> pardiso = nullptr;
+#else
+  	bool needs_init = true;
+#endif
 	long long int prevTime;
 };

@@ -21,7 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\ApplicationPipeline.cpp" />
     <ClCompile Include="src\BBox.cpp" />
-    <ClCompile Include="src\DataObject .cpp" />
+    <ClCompile Include="src\DataObject.cpp" />
     <ClCompile Include="src\Energy.cpp" />
     <ClCompile Include="src\EnergySymDir.cpp" />
     <ClCompile Include="src\main.cpp" />

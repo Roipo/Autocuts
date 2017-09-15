@@ -3,7 +3,7 @@
 #ifndef APPLICATION_PIPELINE_GROUP_H
 #define APPLICATION_PIPELINE_GROUP_H
 
-#include <igl\viewer\Viewer.h>
+#include <igl/viewer/Viewer.h>
 
 struct DataObject;
 namespace igl { namespace viewer { class Viewer; } }

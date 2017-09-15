@@ -8,22 +8,23 @@
 #include <unordered_set>
 #include <fstream>
 #include <algorithm>
-#include <igl\slice.h>
-#include <igl\unique.h>
-#include <igl\writeOBJ.h>
-#include <igl\unproject.h>
-#include <igl\slice_into.h>
-#include <igl\png\writePNG.h>
-#include <igl\unproject_ray.h>
-#include <igl\adjacency_list.h>
-#include <igl\file_dialog_save.h>
-#include <igl\viewer\ViewerData.h>
-#include <igl\ray_mesh_intersect.h>
-#include <igl\all_pairs_distances.h>
-#include <igl\unproject_onto_mesh.h>
-#include <igl\segment_segment_intersect.h>
-#include <igl\triangle_triangle_adjacency.h>
-#include <igl\is_boundary_edge.h>
+#include <igl/slice.h>
+#include <igl/unique.h>
+#include <igl/writeOBJ.h>
+#include <igl/unproject.h>
+#include <igl/slice_into.h>
+#include <igl/png/writePNG.h>
+#include <igl/unproject_ray.h>
+#include <igl/adjacency_list.h>
+//#include <igl/cut_mesh_simple.h>
+#include <igl/file_dialog_save.h>
+#include <igl/viewer/ViewerData.h>
+#include <igl/ray_mesh_intersect.h>
+#include <igl/all_pairs_distances.h>
+#include <igl/unproject_onto_mesh.h>
+#include <igl/segment_segment_intersect.h>
+#include <igl/triangle_triangle_adjacency.h>
+#include <igl/is_boundary_edge.h>
 #include "unionFind.h"
 
 SolverPlugin::SolverPlugin()
@@ -859,7 +860,7 @@ void SolverPlugin::add_color_clamp_slider(const string& name, const shared_ptr<d
 	viewer->ngui->addWidget(name, panel);
 }
 
-inline string SolverPlugin::removeTrailingZeros(string& s) {
+inline string SolverPlugin::removeTrailingZeros(string&& s) {
 	return s.erase(s.find_last_not_of('0') + 1, string::npos);
 }
 
@@ -2056,7 +2057,7 @@ void SolverPlugin::react_to_edge_click()
 		return;
 
 	Vec & disconnect_alphas = solver_wrapper->solver->energy->separation->disconnect_alphas;
-	auto & const ind2pair = solver_wrapper->solver->energy->separation->ind2pair;
+	auto & ind2pair = solver_wrapper->solver->energy->separation->ind2pair;
 	// each 3d edge is split into 2 uv edges, so finding one is enough
 	if ((zeroed_map_it = zeroed_esep_columns.find(pair<int, int>(ev1, ev2))) != zeroed_esep_columns.end())
 	{ // the edge was already clicked -> deactivate (dont ignore separation anymore, reinsert values 1 & -1

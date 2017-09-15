@@ -1,3 +1,9 @@
 x64/
 AutoCut.VC.db
 AutoCut.VC.VC.opendb
+build/
+cmake-build-debug/
+cmake-build-release/
+.idea/
+
+*.dylib

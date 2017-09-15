@@ -3,15 +3,15 @@
 #include "Utils.h"
 
 #include <iostream>
-#include <igl\readOBJ.h>
-#include <igl\file_dialog_open.h>
-#include <igl\project_isometrically_to_plane.h>
+#include <igl/readOBJ.h>
+#include <igl/file_dialog_open.h>
+#include <igl/project_isometrically_to_plane.h>
 
 Solver::Solver()
 	:
 	energy(make_shared<Energy>()),
 	param_mutex(make_unique<mutex>()),
-	mesh_mutex(make_unique<shared_mutex>()),
+	mesh_mutex(make_unique<shared_timed_mutex>()),
 	param_cv(make_unique<condition_variable>())
 {
 }
@@ -97,14 +97,14 @@ void Solver::stop()
 void Solver::update_external_mesh()
 {
 	give_param_slot();
-	unique_lock<shared_mutex> lock(*mesh_mutex);
+	unique_lock<shared_timed_mutex> lock(*mesh_mutex);
 	internal_update_external_mesh();
 	progressed = true;
 }
 
 void Solver::get_mesh(MatX2& X)
 {
-	unique_lock<shared_mutex> lock(*mesh_mutex);
+	unique_lock<shared_timed_mutex> lock(*mesh_mutex);
 	Vs = Eigen::Map<MatX2>(ext_x.data(), ext_x.rows() / 2, 2);
 	X = Vs;
 	progressed = false;

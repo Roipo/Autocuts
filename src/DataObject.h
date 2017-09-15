@@ -4,8 +4,9 @@
 #define DATA_OBJECT_H
 
 
-#include <igl\viewer\Viewer.h>
+#include <igl/viewer/Viewer.h>
 #include <vector>
+#include "igl/serialize.h"
 #include "EigenTypes.h"
 
 struct DataObject;

@@ -1,7 +1,7 @@
 #include "Newton.h"
 
 #include <chrono>
-#include <igl\flip_avoiding_line_search.h>
+#include <igl/flip_avoiding_line_search.h>
 
 Newton::Newton() {}
 
@@ -27,6 +27,7 @@ int Newton::step()
 	SS.insert(SS.end(), SSp.begin(), SSp.end());
 	SS.insert(SS.end(), SSb.begin(), SSb.end());
 
+#ifdef USE_PARDISO
 	pardiso->update_a(SS);
 	try
 	{
@@ -39,6 +40,21 @@ int Newton::step()
 	}
 	Vec rhs = -g;
 	pardiso->solve(rhs, p);
+#else
+	typedef Eigen::Triplet<double> T;
+	std::vector<T> tripletList;
+	tripletList.reserve(II.size());
+	int rows = *std::max_element(II.begin(), II.end())+1;
+	int cols = *std::max_element(JJ.begin(), JJ.end())+1;
+	assert(rows == cols && "Rows == Cols at Newton internal init");
+	for(int i=0; i<II.size(); i++)
+		tripletList.push_back(T(II[i],JJ[i],SS[i]));
+	SpMat mat(rows, cols);
+	mat.setFromTriplets(tripletList.begin(), tripletList.end());
+	solver.factorize(mat);
+	Vec rhs = -g;
+	p = solver.solve(rhs);
+#endif
 	return 0;
 }
 
@@ -49,6 +65,7 @@ bool Newton::test_progress()
 
 void Newton::internal_init()
 {
+#ifdef USE_PARDISO
 	bool needs_init = pardiso == nullptr;
 
 	if (needs_init)
@@ -56,6 +73,7 @@ void Newton::internal_init()
 		pardiso = make_unique<PardisoSolver<vector<int>, vector<double>>>();
 		pardiso->set_type(2, true);
 	}
+#endif
 
 	eval_fgh(m_x, f, g, h);
 
@@ -92,9 +110,23 @@ void Newton::internal_init()
 		SS.insert(SS.end(), SSs.begin(), SSs.end());
 		SS.insert(SS.end(), SSp.begin(), SSp.end());
 		SS.insert(SS.end(), SSb.begin(), SSb.end());
-
+#ifdef USE_PARDISO
 		pardiso->set_pattern(II, JJ, SS);
 		pardiso->analyze_pattern();
+#else
+		typedef Eigen::Triplet<double> T;
+		std::vector<T> tripletList;
+		tripletList.reserve(II.size());
+		int rows = *std::max_element(II.begin(), II.end()) + 1;
+		int cols = *std::max_element(JJ.begin(), JJ.end()) + 1;
+		assert(rows == cols && "Rows == Cols at Newton internal init");
+		for(int i=0; i<II.size(); i++)
+			tripletList.push_back(T(II[i],JJ[i],SS[i]));
+		SpMat mat(rows, cols);
+		mat.setFromTriplets(tripletList.begin(), tripletList.end());
+		solver.analyzePattern(mat);
+		needs_init = false;
+#endif
 	}
 }
 
