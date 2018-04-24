@@ -1,3 +1,3 @@
 [submodule "libigl"]
 	path = libigl
-	url = https://github.com/Roipo/libigl.git
+url=https://github.com/Roipo/libigl_params.git
